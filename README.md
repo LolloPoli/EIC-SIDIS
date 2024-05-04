@@ -1,5 +1,6 @@
 # EIC | Simulation of Semi-Inclusive DIS Physics
 
+
 This program aims to analyze Semi-Inclusive Deep Inelastic Scattering (SIDIS) processes, involving polarized beams of electrons and protons at high energy to simulate the future innovative measure of the Electron-Ion Collider (EIC). The EIC, set to be located at the Brookhaven National Laboratory (BNL) in New York, promises unprecedented accuracy in studying nuclear components, providing crucial insights into the fundamental quark and gluon constituents of the nuclear structure.
 
 ____________________________________
@@ -22,3 +23,4 @@ OUTPUT
 
 - Figure 4: There is a bar graph used to show how the free quarks and diquarks hadronize and three polar diagrams to show the angular propagation of the Pions, Kaons and scattered Electrons, which will be crucial to achieving the best detector design.
 
+________________________________________
