@@ -203,7 +203,7 @@ fragm_up, fragm_down, fragm_uu, fragm_ud = 0, 0, 0, 0
 total_count_pos = 0
 for particle in particles:
     pdg_code = particle[0]
-    particle_name = identify_particle(pdg_code)       # IN THE FINAL STATE THE 'OTHER' COLUMN IS NOT DOMINAT BUT COULD BE INTERESTING TO OBSERVE THE EVOLUTION OF THE OTHER PARTICLES
+    particle_name = identify_particle(pdg_code)       
     event_number = particle[9]  
     dau1 = particle[11]
     dau2 = particle[12]
@@ -256,7 +256,7 @@ for particle in particles:
 total_count_neg = 0
 for particle in particles:
     pdg_code = particle[0]
-    particle_name = identify_particle(pdg_code)       # IN THE FINAL STATE THE 'OTHER' COLUMN IS NOT DOMINAT BUT COULD BE INTERESTING TO OBSERVE THE EVOLUTION OF THE OTHER PARTICLES
+    particle_name = identify_particle(pdg_code)       
     event_number = particle[9]  
     dau1 = particle[11]
     dau2 = particle[12]
@@ -506,8 +506,8 @@ x_DA_pi_neg = [Q/(4*18*275*y*275) for Q, y in zip(Q2_DA_pi_neg, y_DA_pi_neg) if 
 y_DA_kaon_neg = [np.abs(np.tan(p/2)/(np.tan(p/2) + np.tan(t/2))) for p, t in zip(kaon_angles_neg, lepton_angles) if 0.001 <= np.abs(np.tan(p/2)/(np.tan(p/2) + np.tan(t/2))) <= 0.95]
 Q2_DA_kaon_neg = [np.abs(4*18*18*(1-abs(y))/(np.tan(t/2)**2)) for y, t in zip(y_DA_kaon_neg, lepton_angles)]
 x_DA_kaon_neg = [Q/(4*18*275*y*275) for Q, y in zip(Q2_DA_kaon_neg, y_DA_kaon_neg)]
-'''
-# ___________________ POSITIVE GRAPHS ___________________________________________________________________________________________________________
+
+#________________________________________________________________________ POSITIVE GRAPHS ___________________________________________________________________________________________________________
 
 plt.figure(figsize=(12, 8))
 # FILTER POSSIBLE INVALID VALUE OF Q2 
@@ -653,7 +653,7 @@ else:
 
 plt.tight_layout()
 
-# ___________________ NEGATIVE GRAPHS ___________________________________________________________________________________________________________
+#_______________________________________________________________________ NEGATIVE GRAPHS ___________________________________________________________________________________________________________
 
 plt.figure(figsize=(12, 8))
 # FILTER POSSIBLE INVALID VALUE OF Q2 
@@ -783,8 +783,8 @@ else:
     print("No valid momentum values found")
 
 
-# MIMIMIMXIMXIMXIXMIXMX
-'''
+#____________________________________________________________________ ANGLE PRODUCTION ______________________________________________________________________________________________________________
+
 plt.figure(figsize=(13, 7))
 plt.title('Production of Pions, Kaons and Protons in function of the Angle')
 plt.axis('off')
