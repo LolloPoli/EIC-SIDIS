@@ -11,7 +11,6 @@ FILE NAME:
 
 - "ep_count.py":  This is the Python program used to analyze the output file and reconstruct some important behaviour of the processes.
 
-- Figures: This is a folder which contain simulation graphs with higher event counts (10K) than the one presented here, in order to display a more accurate Physics analysis. 
 
 ____________________________________
 OUTPUT
