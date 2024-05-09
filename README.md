@@ -11,7 +11,7 @@ FILE NAME:
 
 - "ep_count.py":  This is the Python program used to analyze the output file and reconstruct some important behaviour of the processes.
 
-
+- "ePIC_task.py:  Just the same program as before, with other calculations (a new program was used to have a more performant setup), here there were performed the first task for the ePIC collaboration in the particles identification through the observation of charged particles.
 ____________________________________
 OUTPUT
 
@@ -24,4 +24,12 @@ OUTPUT
 
 - Figure 4: There is a bar graph used to show how the free quarks and diquarks hadronize and three polar diagrams to show the angular propagation of the Pions, Kaons and scattered Electrons, which will be crucial to achieving the best detector design.
 
+
+Instead, in "ePIC_task.py" three graphs will be constructed:
+
+- Figure 1: Number of particles / total # of positive particles detected, with particles = Pions+, Kaons+ and Protons, in function of $Q^2$, $x$, $z$, $P_{hT}$, Momentum and rapidity ($\eta$).
+
+- Figure 2: The same as before but with negative particles and only with the reconstruction of Pions- and Kaons-
+
+- Figure 3: Show the angular production of the particles, the first line is for the positive case and the second line is for the negative one. Each graph is normalized to 1.
 ________________________________________
