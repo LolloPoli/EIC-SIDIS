@@ -4,41 +4,42 @@ import numpy as np
 from scipy.interpolate import make_interp_spline 
 from scipy.interpolate import griddata
 
+#_____________________________________________________________________________________________________________________________________________________________________________________________
 
-#__________________________________________________________________________________________________________________________________
-# DEFINITION OF A FUNCTIO ABLE TO READ MY PYTHIA6.4 OUTPUT AND COLLECT INPORTANTDATA INTO AN ARRAY (OR MORE)
-# THE COUNT OF THE TOTAL NUMBER OF EVENT IS NECESSARY TO NORMALIZE THE DATA AND HAVE AN ESTIMATE BY EVENT OF THE MEASUREMENTS
+# DEFINITION OF A FUNCTION ABLE TO READ MY PYTHIA6.4 OUTPUT AND COLLECT IMPORTANT DATAs INTO AN ARRAY (OR MORE)
+# THE COUNT OF THE TOTAL NUMBER OF EVENTS IS NECESSARY TO NORMALIZE THE DATA AND HAVE AN ESTIMATION BY EVENT OF THE MEASUREMENTS
+
 def read_pythia_output(filename):
-    particles = []
-    particles_scatter = []
-    event_count = 0  
+    particles = []                                     # DEFINITION OF THE TWO ARRAYS WHICH WILL CONTAIN THE PARTICLES INFORMATION
+    particles_scatter = []                             # THIS SECOND ARRAY IS USEFUL TO HAVE A DIRECT COLLECTION OF THE INFORMATION OF THE SCATTERED PARTICLES
+    event_count = 0                                    # INTRODUCTION OF DIFFERENT PARAMETERS NEEDED IN THE DATA EXTRAPOLATION
     last_s_el_px, last_s_el_py, last_s_el_pz, last_s_el_E = 0, 0, 0, 0
     last_s_ph_pz, last_s_ph_E = 0, 0
     with open(filename, 'r') as file:
         for line in file:
-            if line.strip() != '' and line[0] != '!':  #  TO SKIP USELESS LINE LIKE COMMENT OR EMPTY LINES
+            if line.strip() != '' and line[0] != '!':  # TO SKIP USELESS LINE LIKE COMMENT OR EMPTY LINES
                 parts = line.split()
                 if parts[0] == '0':                    # IN THE OUTPUT FILE THE LINE OF THE EVENT DESCRIPTION START WITH A '0', SO WILL BE EASY TO COUNT THE NUMBER OF EVENTS
                     event_count += 1
                 if len(parts) >= 11 and parts[0] not in ('1', '2'):  # ENSURE THAT THE LINES ARE LONG ENOUGH, THE FIRST TWO LINES ARE REMOVED SINCE REFERS TO THE BEAM PARTICLES
                     try:
-                        pdg_code = int(parts[2])      # THE PDG CODE IS RELATED TO THE IDENTITY OF THE PARTICLE 
-                        status = int(parts[1])        # 'K(I,1)' OR 'KS' IS THE STATUS AND TELL ME INFORMATION ABOUT THE PARTICLES CONDITIONS
+                        pdg_code = int(parts[2])       # THE PDG CODE IS RELATED TO THE IDENTITY OF THE PARTICLE 
+                        status = int(parts[1])         # 'K(I,1)' OR 'KS' IS THE STATUS AND TELL ME INFORMATION ABOUT THE PARTICLES CONDITIONS
                         # FOR EXAMPLE, IF KS < 10 THE PARTICLES DO NOT DECAY/FRAGMENT INTO OTHER PARTICLES FOR ALL THE EVENT TIME MEASUREMENT
-                        # KS > 10 DESCRIBED PARTICLES THAT COULD UNDERGO INTO DIFFERENT TYPE OF DECAYS OR FRAGMENTATION, HENCE, WILL NOT BE PRESENT IN THE FINAL STATE
-                        origin = int (parts[3])       # INFORMATION ABOUT THE IDENTITY OF THE PARENT PARTICLE
-                        daughter1 = int(parts[4])     # FIRST DAUGHTER
-                        daughter2 = int(parts[5])     # LAST DAUGHTER
-                        px = float(parts[6])          # MOMENTUM CALCULATION ALONG THE THREE AXIS (x,y,z) [GeV/c]
+                        # KS > 10 DESCRIBED PARTICLES THAT COULD UNDERGO INTO DIFFERENT TYPES OF DECAYS OR FRAGMENTATION, HENCE, WILL NOT BE PRESENT IN THE FINAL STATE
+                        origin = int (parts[3])        # INFORMATION ABOUT THE IDENTITY OF THE PARENT PARTICLE
+                        daughter1 = int(parts[4])      # FIRST DAUGHTER
+                        daughter2 = int(parts[5])      # LAST DAUGHTER
+                        px = float(parts[6])           # MOMENTUM CALCULATION ALONG THE THREE AXIS (x,y,z) [GeV/c]
                         py = float(parts[7])
                         pz = float(parts[8])
-                        E = float(parts[9])           # ENERGY OF THE PARTICLE [GeV/c]
-                        M = float(parts[10])          # MASS IN [GeV/c^2]
+                        E = float(parts[9])            # ENERGY OF THE PARTICLE [GeV/c]
+                        M = float(parts[10])           # MASS IN [GeV/c^2]
                         phi = float(parts[15]) if len(parts) >= 16 else last_phi  # THE PHI IS COLLECTED FROM THE EVENT LINE, SO IS IMPORTANT TO MAINTAIN THE SAME VALUE FOR ALL THE EVENT FOR ALL PARTICLES CALCULATIONS 
-                        last_phi = phi                # UPDATE OF THE LAST CHECKED VALUE
+                        last_phi = phi                 # UPDATE OF THE LAST CHECKED VALUE
                         real_q2 = float(parts[11]) if len(parts) >= 16 else last_real_q2 
                         last_real_q2 = real_q2
-                        event_number = int(parts[0])  # THAT WILL HELP TO RECALL THE EVENT 3,4,5 WHICH CARRY INFORMATION ABOUT THE e-,gamma,p+ SCATTERED PARTICLES
+                        event_number = int(parts[0])   # THAT WILL HELP TO RECALL THE EVENT 3,4,5 WHICH CARRY INFORMATION ABOUT THE e-,gamma,p+ SCATTERED PARTICLES
                         # SAME PHI AS BEFORE BUT WITH LOWER MULTIPLICITY TO PERFORM A GRAPH
                         s_phi = float(parts[15]) if event_number == 0 else None
                         # ALSO THE ENERGY OF THE SCATTERED ELECTRON IS CALCULATED TWO TIMES, HERE IS NECESSARY FOR THE GRAPH
@@ -77,7 +78,7 @@ def read_pythia_output(filename):
                         pass                          # LINE SKIP
     return particles, particles_scatter, event_count
 
-# DEFINITION OF A FUNCTION TO IDENTIFY THE PARTICLES TYPE WITH THE PDG CODE
+# DEFINITION OF A LIBRARY TO IDENTIFY THE PARTICLE TYPE WITH THE PDG MONTECARLO CODE
 def identify_particle(pdg_code):
     particle_dict = {
         11: "Electron",
@@ -166,10 +167,8 @@ def identify_particle(pdg_code):
 
 # READ OF THE PYTHIA OUTPUT FILE
 filename = "pythia_ep_18x275_q2_0.1_1e7_rid.txt"                           # SMALL PART OF THE DATA, USED TO OBTAIN A FASTER SIMULATION 
-#filename = "pythia_ep_18x275_q2_1e-9_1_rid.txt"                           # SMALL DATA WITH LOWER ENEGY RANGE
+#filename = "pythia_ep_18x275_q2_1e-9_1_rid.txt"                           # SMALL DATA WITH LOWER ENERGY RANGE
 #filename = "pythia_ep_noradcor_18x275_q2_0.1_10000000_run1_100K.txt"      # ORIGINAL FILE BUT REQUIRE TOO MUCH TIME
-#filename = "pythia_ep_noradcor_18x275_q2_0.1_10000000_run1_10K.txt"       # 10K EVENT SET AT HIGH Q2
-#filename = "pythia_ep_noradcor_18x275_q2_1e-9_1.0_run1_10K.txt"           # 10K EVENT SET AT LOW Q2
 particles, particles_scatter, event_count = read_pythia_output(filename)
 
 # COUNTERS FOR ALL THE CONSIDERED PARTICLE TYPES
@@ -199,6 +198,7 @@ strangeK_count, strangeK_count_i, strangeK_count_un, strangeK_count_f = 0, 0, 0,
 xi_count, xi_count_i, xi_count_un, xi_count_f = 0, 0, 0, 0
 fragm_up, fragm_down, fragm_uu, fragm_ud = 0, 0, 0, 0
 
+# HERE THERE ARE A SERIES OF CYCLE TO COUNT THE PARTICLES IN DIFFERENT STATE
 # IDENTIFICATION OF THE TOTAL PARTICLES OF THE EVENT
 for particle in particles:
     pdg_code = particle[0]
@@ -213,6 +213,10 @@ for particle in particles:
             pion_count += 1
         elif particle_name == "Kaon+" or particle_name == "Kaon-" or particle_name == "Kaon0" or particle_name == "Kaon0bar":
             kaon_count += 1
+        elif particle_name == "K0L" or particle_name == "K0S" or particle_name == "K*+" or particle_name == "K*0":
+            kaon_count += 1
+        elif particle_name == "K0Lbar" or particle_name == "K0Sbar" or particle_name == "K*+bar" or particle_name == "K*0bar":
+            kaon_count += 1    
         elif particle_name == "Proton+" or particle_name == "Proton-":
             proton_count += 1
         elif particle_name == "Neutron" or particle_name == "Neutronbar":
@@ -234,9 +238,9 @@ for particle in particles:
 for particle in particles:
     pdg_code = particle[0]
     particle_name = identify_particle(pdg_code)
-    origin = particle[10]                                            # THE ORIGIN IS NEEDED TO REGOGNIZE THE PARTICLES WHICH ARE PRODUCED DIRECTLY FROM THE SCATTERED PARTICLES
+    origin = particle[10]                                            # THE ORIGIN IS NEEDED TO RECOGNIZE THE PARTICLES WHICH ARE PRODUCED DIRECTLY FROM THE SCATTERED PARTICLES
     event_number = particle[9] 
-    if event_number not in (0, 3, 4, 5) and origin in (3, 4, 5):     # FOR THAT REASON THE ORIGIN IS SETTED TO BE 3,4,5
+    if event_number not in (0, 3, 4, 5) and origin in (3, 4, 5):     # FOR THAT REASON THE ORIGIN IS SETTED TO BE 3,4,5 ------> ELECTRON, PHOTON, PROTON
         if particle_name == "Electron" or particle_name == "Positron":
             electron_count_i += 1
         elif particle_name == "Pion+" or particle_name == "Pion-":
@@ -245,6 +249,10 @@ for particle in particles:
             pion_count_i += 1
         elif particle_name == "Kaon+" or particle_name == "Kaon-" or particle_name == "Kaon0" or particle_name == "Kaon0bar":
             kaon_count_i += 1
+        elif particle_name == "K0L" or particle_name == "K0S" or particle_name == "K*+" or particle_name == "K*0":
+            kaon_count_i += 1
+        elif particle_name == "K0Lbar" or particle_name == "K0Sbar" or particle_name == "K*+bar" or particle_name == "K*0bar":
+            kaon_count_i += 1    
         elif particle_name == "Proton+" or particle_name == "Proton-":
             proton_count_i += 1
         elif particle_name == "Neutron" or particle_name == "Neutronbar":
@@ -297,10 +305,6 @@ for particle in particles:    # HERE A ZOOM IN THE 'OTHER' COLUMN IS PERFORMED S
             frag_count_i += 1
         elif particle_name == "Dif" or particle_name == "pi_dif" or particle_name == "w_diff" or particle_name == "phi_dif" or particle_name == "jpsi_dif" or particle_name == "n_dif" or particle_name == "p_dif":
             difractive_count_i += 1
-        elif particle_name == "K0L" or particle_name == "K0S" or particle_name == "K*+" or particle_name == "K*0":
-            strangeK_count_i += 1
-        elif particle_name == "K0Lbar" or particle_name == "K0Sbar" or particle_name == "K*+bar" or particle_name == "K*0bar":
-            strangeK_count_i += 1    
         elif particle_name == "Xi0" or particle_name == "Xi-" or particle_name == "Xi*0" or particle_name == "Xi*-":
             xi_count_i += 1
         elif particle_name == "Xi0bar" or particle_name == "Xi-bar" or particle_name == "Xi*0bar" or particle_name == "Xi*-bar":
@@ -312,9 +316,9 @@ for particle in particles:
     pdg_code = particle[0]
     particle_name = identify_particle(pdg_code)
     event_number = particle[9]  
-    dau1 = particle[11]                                                 # HERE ARE INTRODUCED THE DAUGHTER 1,2 NEEDED TO OBSERVE IF A PARTICLES GENERATE OTHER PARTICLES,
-    dau2 = particle[12]                                                 # HENCE, DECAY AND WILL NOT BE PRESENT IN THE FINAL STATE
-    if event_number not in (0, 3, 4, 5) and (dau1 != 0 and dau2 != 0):  # SO ALL THE PARTICLES WHICH HAS DAUGHTER ARE CONSIDERED
+    dau1 = particle[11]                                                 # HERE ARE INTRODUCED THE DAUGHTER 1,2 NEEDED TO OBSERVE IF PARTICLES GENERATE OTHER PARTICLES
+    dau2 = particle[12]                                                 # SO, IF A PARTICLE UNDERGO A DECAY, WILL NOT BE PRESENT IN THE FINAL STATE
+    if event_number not in (0, 3, 4, 5) and (dau1 != 0 and dau2 != 0):  # THUS, ALL AND ONLY THE PARTICLES WHICH HAS DAUGHTER ARE CONSIDERED
         if particle_name == "Electron" or particle_name == "Positron":
             electron_count_un += 1
         elif particle_name == "Pion+" or particle_name == "Pion-":
@@ -323,6 +327,10 @@ for particle in particles:
             pion_count_un += 1
         elif particle_name == "Kaon+" or particle_name == "Kaon-" or particle_name == "Kaon0" or particle_name == "Kaon0bar":
             kaon_count_un += 1
+        elif particle_name == "K0L" or particle_name == "K0S" or particle_name == "K*+" or particle_name == "K*0":
+            kaon_count_un += 1
+        elif particle_name == "K0Lbar" or particle_name == "K0Sbar" or particle_name == "K*+bar" or particle_name == "K*0bar":
+            kaon_count_un += 1    
         elif particle_name == "Proton+" or particle_name == "Proton-":
             proton_count_un += 1
         elif particle_name == "Neutron" or particle_name == "Neutronbar":
@@ -339,7 +347,7 @@ for particle in particles:
             other_count_un += 1
 
 # ZOOM IN THE OTHER PARTICLES | UNSTABLE PARTICLES
-for particle in particles:    # HERE THE 'OTHER' COLUMN IS DOMINAND SO A ZOOM IS MANDATORY TO UNNDERSTAND THE PROCESS BEHAVIOUR
+for particle in particles:    # HERE THE 'OTHER' COLUMN IS DOMINAND SO A ZOOM IS MANDATORY TO UNDERSTAND THE PROCESS BEHAVIOUR
     pdg_code = particle[0]
     particle_name = identify_particle(pdg_code)
     event_number = particle[9]  
@@ -372,10 +380,6 @@ for particle in particles:    # HERE THE 'OTHER' COLUMN IS DOMINAND SO A ZOOM IS
             frag_count_un += 1
         elif particle_name == "Dif" or particle_name == "pi_dif" or particle_name == "w_diff" or particle_name == "phi_dif" or particle_name == "jpsi_dif" or particle_name == "n_dif" or particle_name == "p_dif":
             difractive_count_un += 1
-        elif particle_name == "K0L" or particle_name == "K0S" or particle_name == "K*+" or particle_name == "K*0":
-            strangeK_count_un += 1
-        elif particle_name == "K0Lbar" or particle_name == "K0Sbar" or particle_name == "K*+bar" or particle_name == "K*0bar":
-            strangeK_count_un += 1    
         elif particle_name == "Xi0" or particle_name == "Xi-" or particle_name == "Xi*0" or particle_name == "Xi*-":
             xi_count_un += 1
         elif particle_name == "Xi0bar" or particle_name == "Xi-bar" or particle_name == "Xi*0bar" or particle_name == "Xi*-bar":
@@ -397,6 +401,10 @@ for particle in particles:
             pion_count_f += 1
         elif particle_name == "Kaon+" or particle_name == "Kaon-" or particle_name == "Kaon0" or particle_name == "Kaon0bar":
             kaon_count_f += 1
+        elif particle_name == "K0L" or particle_name == "K0S" or particle_name == "K*+" or particle_name == "K*0":
+            kaon_count_f += 1
+        elif particle_name == "K0Lbar" or particle_name == "K0Sbar" or particle_name == "K*+bar" or particle_name == "K*0bar":
+            kaon_count_f += 1    
         elif particle_name == "Proton+" or particle_name == "Proton-":
             proton_count_f += 1
         elif particle_name == "Neutron" or particle_name == "Neutronbar":
@@ -415,9 +423,10 @@ for particle in particles:
             other_count_f += 1
 
 # ZOOM IN THE OTHER PARTICLES | FINAL STATE
+# IN THE FINAL STATE THE 'OTHER' COLUMN IS NOT DOMINANT BUT COULD BE INTERESTING TO OBSERVE THE EVOLUTION OF THE OTHER PARTICLES
 for particle in particles:
     pdg_code = particle[0]
-    particle_name = identify_particle(pdg_code)       # IN THE FINAL STATE THE 'OTHER' COLUMN IS NOT DOMINAT BUT COULD BE INTERESTING TO OBSERVE THE EVOLUTION OF THE OTHER PARTICLES
+    particle_name = identify_particle(pdg_code)       
     event_number = particle[9]  
     dau1 = particle[11]
     dau2 = particle[12]
@@ -450,15 +459,15 @@ for particle in particles:
             difractive_count_f += 1
         elif particle_name == "K0L" or particle_name == "K0S" or particle_name == "K*+" or particle_name == "K*0":
             strangeK_count_f += 1
-        elif particle_name == "K0Lbar" or particle_name == "K0Sbar" or particle_name == "K*+bar" or particle_name == "K*0bar":
-            strangeK_count_f += 1    
-        elif particle_name == "Xi0" or particle_name == "Xi-" or particle_name == "Xi*0" or particle_name == "Xi*-":
             xi_count_f += 1
         elif particle_name == "Xi0bar" or particle_name == "Xi-bar" or particle_name == "Xi*0bar" or particle_name == "Xi*-bar":
             xi_count_f += 1
 
 # OBSERVATION OF THE QUARKS AND DIQUARKS HADRONIZATION
-daughter1_up, daughter2_up = [], []                                              
+# HERE THERE IS A STUDY COUNT ABOUT THE HADRONIZATION PRODUCTS OF THE DIFFERENT QUARKS AND DIQUARKS OF THE SYSTEM PRODUCED ONLY IN THE INITIAL STATE
+# i.e. THESE PARTONS ARE DAUGHTERS OF THE SCATTERED HADRONS OR PRODUCED IN THE SCATTERING MECHANISMS 
+# THE COUNT IS LIMITED ONLY AT FOUR HADRONS
+daughter1_up, daughter2_up = [], []                                                    # CREATION OF DIFFERENT ARRAYS SO CONTAIN ALL THE INFORMATION              
 count_daughters_up = {"pion": 0, "kaon": 0, "proton": 0, "neutron":0, "other":0}       # UP QUARK PRODUCTS
 daughter1_down, daughter2_down = [], []
 count_daughters_down = {"pion": 0, "kaon": 0, "proton": 0, "neutron":0, "other":0}     # DOWN QUARK PRODUCTS
@@ -478,7 +487,7 @@ for particle in particles:
         # UP CYCLE
         if particle_name == "Up" or particle_name == "Upbar": 
             fragm_up += 1
-            daughter1_up = [d for d in particles if d[9] == dau1]
+            daughter1_up = [d for d in particles if d[9] == dau1]                # IDENTIFICATION OF THE TWO DAUGHTERS
             daughter2_up = [d for d in particles if d[9] == dau2]
             # DAUGHTER 1 IDENTIFICATION
             for d1 in daughter1_up:
@@ -486,8 +495,9 @@ for particle in particles:
                 particle_name_d1 = identify_particle(pdg_code_d1)
                 if particle_name_d1 in ["Pion+", "Pioni-", "Pion0"]:
                     count_daughters_up["pion"] += 1
-                    break
-                elif particle_name_d1 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar"]:
+                    break 
+                    # 'break' SINCE THE IDENTIFICATION HAVE TO BE CONFINED INSIDE THE EVENT, OTHERWISE, IT WOULD EXCEED THE EVENT AND COUNT TOO MANY PARTICLES
+                elif particle_name_d1 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar", "K0L", "K0S", "K*+", "K*0", "K0Lbar", "K0Sbar", "K*+bar", "K*0bar"]:
                     count_daughters_up["kaon"] += 1
                     break
                 elif particle_name_d1 in ["Proton+", "Proton-"]:
@@ -506,7 +516,7 @@ for particle in particles:
                 if particle_name_d2 in ["Pion+", "Pion-", "Pion0"]:
                     count_daughters_up["pion"] += 1
                     break
-                elif particle_name_d2 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar"]:
+                elif particle_name_d2 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar", "K0L", "K0S", "K*+", "K*0", "K0Lbar", "K0Sbar", "K*+bar", "K*0bar"]:
                     count_daughters_up["kaon"] += 1
                     break
                 elif particle_name_d2 in ["Proton+", "Proton-"]:
@@ -531,7 +541,7 @@ for particle in particles:
                 if particle_name_d1 in ["Pion+", "Pioni-", "Pion0"]:
                     count_daughters_down["pion"] += 1
                     break
-                elif particle_name_d1 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar"]:
+                elif particle_name_d1 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar", "K0L", "K0S", "K*+", "K*0", "K0Lbar", "K0Sbar", "K*+bar", "K*0bar"]:
                     count_daughters_down["kaon"] += 1
                     break
                 elif particle_name_d1 in ["Proton+", "Proton-"]:
@@ -550,7 +560,7 @@ for particle in particles:
                 if particle_name_d2 in ["Pion+", "Pion-", "Pion0"]:
                     count_daughters_down["pion"] += 1
                     break
-                elif particle_name_d2 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar"]:
+                elif particle_name_d2 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar", "K0L", "K0S", "K*+", "K*0", "K0Lbar", "K0Sbar", "K*+bar", "K*0bar"]:
                     count_daughters_down["kaon"] += 1
                     break
                 elif particle_name_d2 in ["Proton+", "Proton-"]:
@@ -575,7 +585,7 @@ for particle in particles:
                 if particle_name_d1 in ["Pion+", "Pioni-", "Pion0"]:
                     count_daughters_ud["pion"] += 1
                     break
-                elif particle_name_d1 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar"]:
+                elif particle_name_d1 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar", "K0L", "K0S", "K*+", "K*0", "K0Lbar", "K0Sbar", "K*+bar", "K*0bar"]:
                     count_daughters_ud["kaon"] += 1
                     break
                 elif particle_name_d1 in ["Proton+", "Proton-"]:
@@ -594,7 +604,7 @@ for particle in particles:
                 if particle_name_d2 in ["Pion+", "Pion-", "Pion0"]:
                     count_daughters_ud["pion"] += 1
                     break
-                elif particle_name_d2 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar"]:
+                elif particle_name_d2 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar", "K0L", "K0S", "K*+", "K*0", "K0Lbar", "K0Sbar", "K*+bar", "K*0bar"]:
                     count_daughters_ud["kaon"] += 1
                     break
                 elif particle_name_d2 in ["Proton+", "Proton-"]:
@@ -619,7 +629,7 @@ for particle in particles:
                 if particle_name_d1 in ["Pion+", "Pioni-", "Pion0"]:
                     count_daughters_uu["pion"] += 1
                     break
-                elif particle_name_d1 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar"]:
+                elif particle_name_d1 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar", "K0L", "K0S", "K*+", "K*0", "K0Lbar", "K0Sbar", "K*+bar", "K*0bar"]:
                     count_daughters_uu["kaon"] += 1
                     break
                 elif particle_name_d1 in ["Proton+", "Proton-"]:
@@ -638,7 +648,7 @@ for particle in particles:
                 if particle_name_d2 in ["Pion+", "Pion-", "Pion0"]:
                     count_daughters_uu["pion"] += 1
                     break
-                elif particle_name_d2 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar"]:
+                elif particle_name_d2 in ["Kaon+", "Kaon-", "Kaon0", "Kaon0bar", "K0L", "K0S", "K*+", "K*0", "K0Lbar", "K0Sbar", "K*+bar", "K*0bar"]:
                     count_daughters_uu["kaon"] += 1
                     break
                 elif particle_name_d2 in ["Proton+", "Proton-"]:
@@ -651,6 +661,7 @@ for particle in particles:
                     count_daughters_uu["other"] += 1
                     break
 
+# HERE A "SMALL" SECTION TO NORMALIZE ALL THE COUNTS OVER THE TOTAL NUMBER OF THE EVENTS
 # NORMALIZATION OF THE COUNTS
 def norm_particle_count(particle_c, event_c):
     norm_count = particle_c/event_c
@@ -744,16 +755,17 @@ norm_strangeK_f = norm_particle_count(strangeK_count_f, event_count)
 norm_xi_f = norm_particle_count(xi_count_f, event_count)
 
 # FUNCTION TO HAVE LINE HISTOGRAMS
+# USED TO DRAW ONLY THE LINE OF THE HISTOGRAM, SINCE THE OVERLAPPING OF DIFFERENT HISTOGRAMS COULD BE CONFUSING
 def plot_histogram_lines(data, bins, color, label, linewidth=2):
     hist, bins_edges = np.histogram(data, bins=bins)
     bins_centers = (bins_edges[:-1] + bins_edges[1:]) / 2
     plt.plot(bins_centers, hist, color=color, label=label, linewidth=linewidth)
 
-# DEFINITION OF MY VARIABLES
-# ENERGY
+# DEFINITION OF THE VARIABLES | HERE ALL THE INFORMATION COLLECTED BY THE FILE ARE ASSIGNED
+# ENERGY & MASS
 pion_energies = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Pion+", "Pion-", "Pion0"]]
 pion_charged_en = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Pion+", "Pion-"]]
-proton_energies = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Proton+", "Proton-"] and particle[9] != 5]
+proton_energies = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Proton+", "Proton-"] and particle[9] != 5]  # !=5 TO REMOVE THE SCATTERED PROTON
 kaon_energies = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Kaon+", "Kaon-", "Kaon0"]]
 pion_mass = [particle[6] for particle in particles if identify_particle(particle[0]) in ["Pion+", "Pion-", "Pion0"]]
 kaon_mass = [particle[6] for particle in particles if identify_particle(particle[0]) in ["Kaon+", "Kaon-", "Kaon0"]]
@@ -777,7 +789,7 @@ electron_py =  [particle[3] for particle in particles if identify_particle(parti
 electron_pz =  [particle[4] for particle in particles if identify_particle(particle[0]) in ["Electron", "Positron"]]
 lepton_angles = [particle[7] for particle in particles]                  # SCATTERED ANGLE WITH HIGH MULTIPLICITY
 Q2 = [particle[8] for particle in particles]
-# SCATTERED PARTICLES
+# SCATTERED PARTICLES | ARE CALCULATED TWO TIMES WITH DIFFERENT MULTIPLICITY TO HAVE A BETTER COUPLING WITH THE DATA AND THE GRAPHS
 sc_electron_px = [particle[2] for particle in particles if particle[9] == 3]
 sc_electron_py = [particle[3] for particle in particles if particle[9] == 3]
 sc_electron_pz = [particle[4] for particle in particles if particle[9] == 3]
@@ -793,7 +805,7 @@ scattered_gamma_E = [particle[5] for particle in particles_scatter[2:]]     # TH
 scattered_gamma_pz = [particle[4] for particle in particles_scatter[2:]]
 sc_el_ang = [particle[6] for particle in particles_scatter]            
 scattered_el_ang = [value for value in sc_el_ang if value is not None]      # FILTERED VALUE OF THE SCATTERED ANGLE, THE 'None' ARE REMOVED FROM THE ARRAY
-scattered_el_ang_deg = [np.degrees(a) for a in scattered_el_ang]
+scattered_el_ang_deg = [np.degrees(a) for a in scattered_el_ang]       
 sc_el_E = [particle[7] for particle in particles_scatter]
 scat_el_E = [value for value in sc_el_E if value is not None]               # ENERGY NEEDED FOR THE GRAPH 
 mod_q = [np.sqrt(E**2 + pz**2) for E, pz in zip(scattered_gamma_E, scattered_gamma_pz)]   
@@ -841,12 +853,6 @@ y_DA_kaon = [np.tan(p/2)/(np.tan(p/2) + np.tan(t/2)) for p, t in zip(kaon_angles
 Q2_DA_kaon = [4*18*18*(1-abs(y))/(np.tan(t/2)**2) for y, t in zip(y_DA_kaon, lepton_angles)]
 x_DA_kaon = [Q/(40*275*y*275) for Q, y in zip(Q2_DA_kaon, y_DA_kaon)]
 
-# THEORETICAL CALCULATION  
-# PION
-xB_pion = [Q/(2*(Ep*E - px*(-pxp) - py*(-pyp) - pz*pzp)) for Q, Ep, E, px, pxp, py, pyp, pz, pzp in zip (Q2, pion_energies, scattered_gamma_E, pion_x, scattered_el_px, pion_y, scattered_el_py, pion_z, scattered_gamma_pz)]
-y_pion = [(Ep*E - px*(-pxp) - py*(-pyp) - pz*pzp)/(18*Ep - (-18)*pz) for Q, Ep, E, px, pxp, py, pyp, pz, pzp in zip (Q2, pion_energies, scattered_gamma_E, pion_x, scattered_el_px, pion_y, scattered_el_py, pion_z, scattered_gamma_pz)]
-Q2_pion = [Q*Ep/(Ep) for Q, Ep in zip (Q2, pion_energies)]
-
 #________________________________________________________________________________HISTOGRAM FOR THE PARTICLES BEHAVIOURS_______________________________________________________________________________________________________
 
 # FILTER POSSIBLE INVALID VALUE OF Q2 
@@ -854,9 +860,9 @@ valid_Q2_pi = [q2 for q2 in Q2_DA_pi if q2 > 0]
 valid_Q2_kaon = [q2 for q2 in Q2_DA_kaon if q2 > 0]
 valid_Q2_proton = [q2 for q2 in Q2_DA_proton if q2 >0]
 
-# IN CASE THERE ARE NO PROBLES WITHT THE VALUE 
+# IN CASE THERE ARE NO PROBLEMS WITH THE VALUES
 if valid_Q2_pi and valid_Q2_kaon and valid_Q2_proton:
-    # GENERATION OF A GREAT FIGURE TO FOUR GRAPHS
+    # GENERATION OF A FIGURE TO CONTAIN FOUR GRAPHS
     plt.figure(figsize=(12, 7))
     plt.subplot(2,2,1)
     # DEFFINITION OF THE BINS OF Q2
@@ -875,7 +881,7 @@ if valid_Q2_pi and valid_Q2_kaon and valid_Q2_proton:
     plt.grid(True, which="both", ls="--", alpha=0.5)
     plt.legend()
    
-    # IN CASE THE VALUES ARE NOT CORRECTED COULD BE INTERESTING TO UNDERSTAND ITS LOCATION
+    # IN CASE THE VALUES ARE NOT CORRECTED COULD BE INTERESTING TO UNDERSTAND THE LOCATION OF THE PROBLEM
 elif not valid_Q2_proton:
     print("No valid Q^2 values found for protons.")
 elif not valid_Q2_kaon:
@@ -984,10 +990,9 @@ else:
 particle_names = ['Pions', 'Kaons', 'Protons', 'Neutrons', 'Up', 'Down', 'Electrons', 'Photons', 'Others']
 particle_counts = [pion_count, kaon_count, proton_count, neutron_count, up_count, down_count, electron_count, photon_count, other_count]
 
-# BIG FIGURE TO CONTAIN 6 GRAPHS
-plt.figure(figsize=(12, 8), facecolor = 'white')
-
-# BAR PLOT
+# FIGURE TO CONTAIN SIX GRAPHS
+plt.figure(figsize=(12, 8))
+# BAR PLOT OF THE TOTAL PARTICLES COUNT
 plt.subplot(3, 2, 1)
 palette = sns.color_palette("Blues", len(particle_names))
 plt.bar(particle_names, particle_counts, color=palette, alpha=0.7, width=0.5)
@@ -999,11 +1004,9 @@ for i, count in enumerate(particle_counts):
 total_particles = sum(particle_counts)
 plt.text(0.5, 0.9, f'Total Particles: {total_particles}', ha='center', va='center', transform=plt.gca().transAxes, fontsize=8)
 
-
-# PLOT FOR NORMALIZED DATA
+# SAME PLOT FOR NORMALIZED DATA
 norm_particle_names = ['Pions', 'Kaons', 'Protons', 'Neutrons', 'Up', 'Down', 'Electrons', 'Photons', 'Others']
 norm_particle_counts = [norm_pion, norm_kaon, norm_proton, norm_neutron, norm_up, norm_down, norm_electron, norm_photon, norm_other]
-
 # PLOT
 plt.subplot(3, 2, 2)
 norm_palette = sns.color_palette("Reds", len(norm_particle_names))
@@ -1016,17 +1019,17 @@ for i, count in enumerate(norm_particle_counts):
 norm_total_particles = sum(norm_particle_counts)
 plt.text(0.5, 0.9, f'Particles per event: {round(norm_total_particles,2)}', ha='center', va='center', transform=plt.gca().transAxes, fontsize=8)
 
-# ANGULAR DISTRIBUTION OF THE SCATTERED ELECTRONS
+# PLOT OF x vs Q2 WITH THE DOULE ANGLE METHOD | KAONS
 plt.subplot(3,2,3)
 plt.hist2d(x_DA_kaon, Q2_DA_kaon, bins=[np.logspace(np.log10(1e-5), np.log10(1), 30), np.logspace(np.log10(1e1), np.log10(1e6), 30)])
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('x_B')
 plt.ylabel('Q^2')
-plt.title('x_B vs Q2   |   TH   |   Pion')
+plt.title('x_B vs Q2   |   DA   |   Kaons')
 plt.colorbar(label='Counts')
 
-# PLOT OF x vs Q2 WITH THE DOUBLE ANGLE METHOD
+# PLOT OF x vs Q2 WITH THE DOUBLE ANGLE METHOD | PIONS
 plt.subplot(3,2,4)
 plt.hist2d(x_DA_pi, Q2_DA_pi, bins=[np.logspace(np.log10(1e-5), np.log10(1), 30), np.logspace(np.log10(1e1), np.log10(1e6), 30)])
 plt.xscale('log')
@@ -1035,7 +1038,6 @@ plt.xlabel('x_B')
 plt.ylabel('Q^2')
 plt.title('x_B vs Q2   |   DA   |   Pions')
 plt.colorbar(label='Counts')
-plt.gca().set_facecolor('white')
 
 # DENSITY OF THE PION'S MOMENTUM IN THE XY PLANE
 plt.subplot(3, 2, 5)
@@ -1058,10 +1060,10 @@ plt.ylim(-0.4,1.35)
 plt.tight_layout()  # TO GENERATE ORGANIZED GRAPH
 
 #_____________________________________________________________IDENTIFICATION OF THE PARTICLES IN DIFFERENT MOMENTS OF THE EVENT________________________________________________________________________
-'''
-# GENERATION OF A LARGE CANVAS TO CONTAIN 6 GRAPHS
+
+# GENERATION OF A CANVAS TO CONTAIN SIX GRAPHS
 plt.figure(figsize=(13, 8))
-# NORMALIZATION OF ALL THE DATA COLLECTED
+# NORMALIZATION AND ORGANIZATION OF ALL THE NECESSARY DATA 
 norm_particle_names_i = ['Pions', 'Kaons', 'Protons', 'Neutrons', 'Up', 'Down', 'Gluon', 'Electron', 'Photon', 'Others']
 norm_particle_counts_i = [norm_pion_i, norm_kaon_i, norm_proton_i, norm_neutron_i, norm_up_i, norm_down_i, norm_gluon_i, norm_electron_i, norm_photon_i, norm_other_i]
 norm_particle_names_oi = ['Rho', 'St. K', 'Strange', 'Charm', 'Delta', 'Lambda', 'Epsilon', 'Eta', 'Omg/Phi', 'Difr', 'Diq (ud)', 'Diq(uu)']
@@ -1075,20 +1077,19 @@ norm_particle_counts_o = [norm_rho_un, norm_strangeK_un, norm_strange_un, norm_c
 norm_particle_names_of = ['Rho', 'St. K', 'Strange', 'Charm', 'Diquark', 'Delta', 'Lambda', 'Epsilon', 'Eta', 'Omg/Phi', 'Fragm', 'Difr']
 norm_particle_counts_of = [norm_rho_f, norm_strangeK_f, norm_strange_f, norm_charm_f, norm_diq_f, norm_delta_f, norm_lambda_f, norm_epsilon_f, norm_eta_f, norm_omegaphi_f, norm_frag_f, norm_difractive_f]
 
-# INITIAL STATE
+# INITIAL STATE | THE STRUCTURE OF THE GRAPHS IS THE SAME OF THE BAR GRAPH IN THE PREVIOUS CANVAS
 plt.subplot(3,2,1)
 norm_palette_i = sns.color_palette("Blues", len(norm_particle_names_i))
 plt.bar(norm_particle_names_i, norm_particle_counts_i, color=norm_palette_i, alpha=0.7, width=0.5)
 plt.ylabel('Normalized Particle counts')
 plt.title('Norm. Particles in the Initial State')
-plt.ylabel('Normalized Particle counts')
 plt.tick_params(axis='both', which='major', labelsize=8)
 for i, count in enumerate(norm_particle_counts_i):
     plt.text(i, count + 0.05 * max(norm_particle_counts_i), f"{round(count, 2)}", ha='center', va='bottom', fontsize=8)
 norm_total_particles_i = sum(norm_particle_counts_i)
 plt.text(0.15, 0.9, f'Particles per event: {round(norm_total_particles_i,2)}', ha='center', va='center', transform=plt.gca().transAxes, fontsize=8)
 
-# OTHER INITIAL STATE
+# INITIAL STATE | OTHER PARTICLES
 plt.subplot(3,2,2)
 norm_palette_oi = sns.color_palette("Blues", len(norm_particle_names_oi))
 plt.bar(norm_particle_names_oi, norm_particle_counts_oi, color=norm_palette_oi, alpha=0.7, width=0.5)
@@ -1112,7 +1113,7 @@ for i, count in enumerate(norm_particle_counts_un):
 norm_total_particles_un = sum(norm_particle_counts_un)
 plt.text(0.5, 0.9, f'Particles per event: {round(norm_total_particles_un,2)}', ha='center', va='center', transform=plt.gca().transAxes, fontsize=8)
 
-# OTHER UNSTABLE STATE
+# UNSTABLE STATE | OTHER PARTICLES
 plt.subplot(3,2,4)
 norm_palette_o = sns.color_palette("Reds", len(norm_particle_names_o))
 plt.bar(norm_particle_names_o, norm_particle_counts_o, color=norm_palette_o, alpha=0.7, width=0.5)
@@ -1136,7 +1137,7 @@ for i, count in enumerate(norm_particle_counts_f):
 norm_total_particles_f = sum(norm_particle_counts_f)
 plt.text(0.5, 0.9, f'Particles per event: {round(norm_total_particles_f,2)}', ha='center', va='center', transform=plt.gca().transAxes, fontsize=8)
 
-#OTHER FINAL STATE
+# FINAL STATE | OTHER PARTICLES
 plt.subplot(3,2,6)
 norm_palette_of = sns.color_palette("Greens", len(norm_particle_names_of))
 plt.bar(norm_particle_names_of, norm_particle_counts_of, color=norm_palette_of, alpha=0.7, width=0.5)
@@ -1149,21 +1150,12 @@ norm_total_particles_of = sum(norm_particle_counts_of)
 plt.text(0.5, 0.9, f'Particles per event: {round(norm_total_particles_of,2)}', ha='center', va='center', transform=plt.gca().transAxes, fontsize=8)
 
 plt.tight_layout() 
-'''
-#________________________________________________________________ANGULAR DISTRIBUTION____________________________________________________________________________________________________
+
+#____________________________________________________________________________ANGULAR DISTRIBUTION____________________________________________________________________________________________________
 
 plt.figure(figsize=(14,8))
-'''
-# SCATTERED ELECTRON
-plt.subplot(2,3,1, polar=True)
-plt.scatter(scattered_el_ang_deg, scat_el_E, c=scat_el_E, cmap='viridis', alpha=0.7)
-plt.colorbar(label='Energy', pad = 0.1)
-plt.xlabel('Angles')
-plt.title('Angular distribution of the electrons')
-plt.gca().set_theta_zero_location('E')
-plt.gca().set_theta_direction(1)
-'''
-# HADRONIZATION
+
+# HADRONIZATION BAR GRAPH
 plt.subplot(2,2,1)
 categories = ["pion", "kaon", "proton", "neutron"]                  # NOT INTERESTED IN THE 'OTHERS' PLOT
 counts_up = [count_daughters_up[name] for name in categories]
@@ -1189,32 +1181,32 @@ plt.title('Daughters from parton fragments')
 plt.xticks([i + 1.5 * width for i in x], categories)
 plt.legend()
 
-# PION ANGOLAR DISTRIBUTIONS
+# PION ANGOLAR DISTRIBUTIONS IN FUNCTION OF THE MOMENTUM
 plt.subplot(2,2,2, polar=True)
-plt.scatter(pion_angles_deg, pion_energies, c=pion_energies, cmap='viridis', alpha=0.7, s=2)
-plt.colorbar(label='Energy [GeV]', pad = 0.1)
+plt.scatter(pion_angles_deg, pion_mom, c=pion_mom, cmap='viridis', alpha=0.7, s=2)
+plt.colorbar(label='Momentum [GeV]', pad = 0.1)
 plt.xlim(0, np.pi)
 plt.title('Angular distribution of the pions')
 plt.gca().set_theta_zero_location('E')
 plt.gca().set_theta_direction(1)
 plt.gca().set_rgrids([0, 50, 100, 150, 200, 250])
 
-# KAON ANGOLAR DISTRIBUTIONS
+# KAON ANGOLAR DISTRIBUTIONS IN FUNCTION OF THE MOMENTUM
 plt.subplot(2,2,3, polar=True)
-plt.scatter(kaon_angles_deg, kaon_energies, c=kaon_energies, cmap='viridis', alpha=0.7, s=2)
-plt.colorbar(label='Energy [GeV]', pad = 0.1)
+plt.scatter(kaon_angles_deg, kaon_mom, c=kaon_mom, cmap='viridis', alpha=0.7, s=2)
+plt.colorbar(label='Momentum [GeV]', pad = 0.1)
 plt.xlim(0, np.pi)
 plt.title('Angular distribution of the kaons')
 plt.gca().set_theta_zero_location('E')
 plt.gca().set_theta_direction(1)
 plt.gca().set_rgrids([0, 50, 100, 150, 200, 250])
 
-# PROTON ANGOLAR DISTRIBUTIONS
+# SCATTERED ELECTRON ANGOLAR DISTRIBUTIONS IN FUNCTION OF THE MOMENTUM
 plt.subplot(2,2,4, polar=True)
-plt.scatter(sc_electron_ang_deg, sc_electron_E, c=sc_electron_E, cmap='viridis', alpha=0.7, s=2)
-plt.colorbar(label='Energy [GeV]', pad = 0.1)
+plt.scatter(sc_electron_ang_deg, sc_electron_mom, c=sc_electron_mom, cmap='viridis', alpha=0.7, s=2)
+plt.colorbar(label='Momentum [GeV]', pad = 0.1)
 plt.xlim(0, np.pi)
-plt.title('Angular distribution of the protons')
+plt.title('Angular distribution of the scattered electron')
 plt.gca().set_theta_zero_location('E')
 plt.gca().set_theta_direction(1)
 plt.gca().set_rgrids([0, 3, 6, 9, 12, 15])
