@@ -4,9 +4,9 @@ import numpy as np
 from scipy.interpolate import make_interp_spline 
 from scipy.interpolate import griddata
 
-#__________________________________________________________________________________________________________________________________
-# DEFINITION OF A FUNCTIO ABLE TO READ MY PYTHIA6.4 OUTPUT AND COLLECT INPORTANTDATA INTO AN ARRAY (OR MORE)
-# THE COUNT OF THE TOTAL NUMBER OF EVENT IS NECESSARY TO NORMALIZE THE DATA AND HAVE AN ESTIMATE BY EVENT OF THE MEASUREMENTS
+#_______________________________________________________________________________________________________________________________________________________________________
+# DEFINITION OF A FUNCTION ABLE TO READ MY PYTHIA6.4 OUTPUT AND COLLECT IMPORTANT DATA INTO AN ARRAY (OR MORE)
+# THE COUNT OF THE TOTAL NUMBER OF EVENTS IS NECESSARY TO NORMALIZE THE DATA AND HAVE AN ESTIMATE BY EVENT OF THE MEASUREMENTS
 def read_pythia_output(filename):
     particles = []
     particles_scatter = []
@@ -200,6 +200,8 @@ fragm_up, fragm_down, fragm_uu, fragm_ud = 0, 0, 0, 0
 
 
 # WE NEED A COUNT FOR ALL THE POSITIVE PARTICLES IN THE FINAL STATE
+#___________________________________________________________________________________ POSITIVE ______________________________________________________________________________________________________
+
 total_count_pos = 0
 for particle in particles:
     pdg_code = particle[0]
@@ -251,7 +253,7 @@ for particle in particles:
             xi_count_pos+= 1
             total_count_pos += 1
 
-# ___________________________ NEGATIVE _________________________________________________________________________-
+#_____________________________________________________________________________ NEGATIVE _____________________________________________________________________________________________________________
 
 total_count_neg = 0
 for particle in particles:
@@ -344,7 +346,7 @@ proton_z = [particle[4] for particle in particles if identify_particle(particle[
 kaon_x = [particle[2] for particle in particles if identify_particle(particle[0]) in ["Kaon+", "Kaon-", "Kaon0"] and particle[11] == 0 and particle[12] == 0]
 kaon_y = [particle[3] for particle in particles if identify_particle(particle[0]) in ["Kaon+", "Kaon-", "Kaon0"] and particle[11] == 0 and particle[12] == 0]
 kaon_z = [particle[4] for particle in particles if identify_particle(particle[0]) in ["Kaon+", "Kaon-", "Kaon0"] and particle[11] == 0 and particle[12] == 0]
-# __________________ POSITIVE PARTICLES________________________________________________________________________________________________________________________________
+#_________________________________________________ POSITIVE PARTICLES ________________________________________________________________________________________________________________________________
 # PION
 pion_x_pos = [particle[2] for particle in particles if identify_particle(particle[0]) in ["Pion+"] and particle[11] == 0 and particle[12] == 0]
 pion_y_pos = [particle[3] for particle in particles if identify_particle(particle[0]) in ["Pion+"] and particle[11] == 0 and particle[12] == 0]
@@ -361,7 +363,7 @@ kaon_y_pos = [particle[3] for particle in particles if identify_particle(particl
 kaon_z_pos = [particle[4] for particle in particles if identify_particle(particle[0]) in ["Kaon+", "K*+"] and particle[11] == 0 and particle[12] == 0]
 kaon_E_pos = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Kaon+", "K*+"] and particle[11] == 0 and particle[12] == 0]
 
-# __________________ NEGATIVE PARTICLES _______________________________________________________________________________________________________________________________
+#_________________________________________________ NEGATIVE PARTICLES _______________________________________________________________________________________________________________________________
 
 # PION
 pion_x_neg = [particle[2] for particle in particles if identify_particle(particle[0]) in ["Pion-"] and particle[11] == 0 and particle[12] == 0]
@@ -374,7 +376,7 @@ kaon_y_neg = [particle[3] for particle in particles if identify_particle(particl
 kaon_z_neg = [particle[4] for particle in particles if identify_particle(particle[0]) in ["Kaon-", "K*+bar"] and particle[11] == 0 and particle[12] == 0]
 kaon_E_neg = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Kaon-", "K*+bar"] and particle[11] == 0 and particle[12] == 0]
 
-# _______________________________________________________________________________________________________________________________________________________
+#____________________________________________________________________________________________________________________________________________________________________________________________________
 # LEPTON
 electron_energies = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Electron", "Positron"]] # LOW MULTIPLICITY
 electron_px =  [particle[2] for particle in particles if identify_particle(particle[0]) in ["Electron", "Positron"]]
@@ -433,7 +435,7 @@ sc_electron_mom = [np.sqrt(px**2 + py**2 + pz**2) for px, py, pz in zip(sc_elect
 sc_electron_ang = [np.arccos(pz/p) for pz, p in zip(sc_electron_pz, sc_electron_mom)]
 sc_electron_ang_deg = [np.degrees(a) for a in sc_electron_ang]
 '''
-# _________________________________ POSITIVE CASE _______________________________________________________________________________________________________
+#_____________________________________________________________________________ POSITIVE CASE _______________________________________________________________________________________________________
 # PION
 pion_transv_mom_pos = [np.sqrt(px**2 + py**2) for px, py in zip (pion_x_pos, pion_y_pos)]  
 pion_mom_pos = [np.sqrt(px**2 + py**2 + pz**2) for px, py, pz in zip(pion_x_pos, pion_y_pos, pion_z_pos)]
@@ -476,7 +478,7 @@ y_DA_kaon_pos = [np.abs(np.tan(p/2)/(np.tan(p/2) + np.tan(t/2))) for p, t in zip
 Q2_DA_kaon_pos = [np.abs(4*18*18*(1-abs(y))/(np.tan(t/2)**2)) for y, t in zip(y_DA_kaon_pos, lepton_angles)]
 x_DA_kaon_pos = [Q/(4*18*275*y*275) for Q, y in zip(Q2_DA_kaon_pos, y_DA_kaon_pos)]
 
-# _______________________________________________ NEGATIVE _______________________________________________________________________________________________________
+#_______________________________________________________________________ NEGATIVE CASE _______________________________________________________________________________________________________
 
 # PION
 pion_transv_mom_neg = [np.sqrt(px**2 + py**2) for px, py in zip (pion_x_neg, pion_y_neg)]  
@@ -789,6 +791,7 @@ plt.figure(figsize=(13, 7))
 plt.title('Production of Pions, Kaons and Protons in function of the Angle')
 plt.axis('off')
 
+# POSITIVE PION
 plt.subplot(2,3,1, polar=True)
 plt.hist(pion_angles_pos_deg, bins=1500, color='skyblue', edgecolor='grey', label=f'Pions+ ({round(norm_pion_pos,3)})', density='True')
 plt.xlim(0, np.pi)
@@ -797,6 +800,7 @@ plt.gca().set_theta_direction(1)
 plt.gca().set_rgrids([0, 0.05, 0.1, 0.15, 0.2, 0.25], labels=[0, "", 0.1, "", 0.2, ""])
 plt.legend()
 
+# NEGATIVE PION
 plt.subplot(2,3,4, polar=True)
 plt.hist(pion_angles_neg_deg, bins=1500, color='skyblue', label=f'Pions- ({round(norm_pion_neg,3)})', edgecolor='grey', density='True')
 plt.xlim(0, np.pi)
@@ -806,6 +810,7 @@ plt.gca().set_theta_direction(1)
 plt.gca().set_rgrids([0, 0.05, 0.1, 0.15, 0.2, 0.25], labels=[0, "", 0.1, "", 0.2, ""])
 plt.legend()
 
+# POSITIVE KAON
 plt.subplot(2,3,2, polar=True)
 plt.hist(kaon_angles_pos_deg, bins=1500, color='lightgreen', label=f'Kaons+ ({round(norm_kaon_pos,3)})', edgecolor='grey', density='True')
 plt.xlim(0, np.pi)
@@ -814,6 +819,7 @@ plt.gca().set_theta_direction(1)
 plt.gca().set_rgrids([0, 0.05, 0.1, 0.15, 0.2, 0.25], labels=[0, "", 0.1, "", 0.2, ""])
 plt.legend()
 
+# NEGATIVE KAON
 plt.subplot(2,3,5, polar=True)
 plt.hist(kaon_angles_neg_deg, bins=1500, color='lightgreen', label=f'Kaons- ({round(norm_kaon_neg,3)})', edgecolor='grey', density='True')
 plt.xlim(0, np.pi)
@@ -822,6 +828,7 @@ plt.gca().set_theta_direction(1)
 plt.gca().set_rgrids([0, 0.05, 0.1, 0.15, 0.2, 0.25], labels=[0, "", 0.1, "", 0.2, ""])
 plt.legend()
 
+# PROTON
 plt.subplot(2,3,3, polar=True)
 plt.hist(proton_angles_pos_deg, bins=1500, color='mediumorchid', label=f'Protons ({round(norm_proton_pos,3)})', edgecolor='grey', density='True')
 plt.xlim(0, np.pi)
