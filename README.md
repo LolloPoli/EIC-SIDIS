@@ -25,7 +25,7 @@ OUTPUT
 - Figure 4: There is a bar graph used to show how the free quarks and diquarks hadronize and three polar diagrams to show the angular propagation of the Pions, Kaons and scattered Electrons, which will be crucial to achieving the best detector design.
 
 
-Instead, in "ePIC_task.py" three graphs will be constructed:
+Instead, in "ePIC_task.py" three graphs will be:
 
 - Figure 1: Number of particles / total # of positive particles detected, with particles = Pions+, Kaons+ and Protons, in function of $Q^2$, $x$, $z$, $P_{hT}$, Momentum and rapidity ($\eta$).
 
