@@ -31,5 +31,5 @@ Instead, in "ePIC_task.py" three graphs will be:
 
 - Figure 2: The same as before but with negative particles and only with the reconstruction of Pions- and Kaons-
 
-- Figure 3: Show the angular production of the particles, the first line is for the positive case and the second line is for the negative one. Each graph is normalized to 1.
+- Figure 3: Show the angular production of the particles, the first line is for the positive case while the second line is for the negative one. Each graph is normalized to 1 to achieve a better resolution and comprehension.
 ________________________________________
