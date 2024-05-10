@@ -4,7 +4,10 @@ import numpy as np
 from scipy.interpolate import make_interp_spline 
 from scipy.interpolate import griddata
 
-#_______________________________________________________________________________________________________________________________________________________________________
+#_____________________________________________________________________________________________________________________________________________________________________________________
+
+# COPY PASTE OF THE PREVIOUS PROGRAM, TAKING ALL THE DATA SINCE COULD BE USEFUL
+
 # DEFINITION OF A FUNCTION ABLE TO READ MY PYTHIA6.4 OUTPUT AND COLLECT IMPORTANT DATA INTO AN ARRAY (OR MORE)
 # THE COUNT OF THE TOTAL NUMBER OF EVENTS IS NECESSARY TO NORMALIZE THE DATA AND HAVE AN ESTIMATE BY EVENT OF THE MEASUREMENTS
 def read_pythia_output(filename):
@@ -200,8 +203,7 @@ fragm_up, fragm_down, fragm_uu, fragm_ud = 0, 0, 0, 0
 
 
 # WE NEED A COUNT FOR ALL THE POSITIVE PARTICLES IN THE FINAL STATE
-#___________________________________________________________________________________ POSITIVE ______________________________________________________________________________________________________
-
+# POSITIVE CASE
 total_count_pos = 0
 for particle in particles:
     pdg_code = particle[0]
@@ -253,8 +255,7 @@ for particle in particles:
             xi_count_pos+= 1
             total_count_pos += 1
 
-#_____________________________________________________________________________ NEGATIVE _____________________________________________________________________________________________________________
-
+# NEGATIVE CASE
 total_count_neg = 0
 for particle in particles:
     pdg_code = particle[0]
@@ -404,7 +405,8 @@ scattered_el_ang_deg = [np.degrees(a) for a in scattered_el_ang]
 sc_el_E = [particle[7] for particle in particles_scatter]
 scat_el_E = [value for value in sc_el_E if value is not None]               # ENERGY NEEDED FOR THE GRAPH 
 mod_q = [np.sqrt(E**2 + pz**2) for E, pz in zip(scattered_gamma_E, scattered_gamma_pz)]   
-# OTHER QUANTITIES DEFINITION 
+
+# OTHER QUANTITIES DEFINITION | AT THE MOMENT ARE USELESS
 '''
 # PION
 pion_transv_mom = [np.sqrt(px**2 + py**2) for px, py in zip (pion_x, pion_y)]  
