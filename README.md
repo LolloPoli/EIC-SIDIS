@@ -15,7 +15,8 @@ FILE NAME:
 ____________________________________
 OUTPUT
 
-"ep_count.py" reconstructs different kinematic variables of the system and its output consists of a set of 4 Figures which contain different graphs:
+"ep_count.py" reconstructs different kinematic variables of the system and its output consists of a set of four Figures which contain different graphs:
+
 - Figure 1: Show the Pion, Kaons and Protons production with the variation of four main variables. $Q^2$ encodes information about the energy exchanged in the process, $x_B$ known as 'Bjorken variables', is the fraction of the nucleon's momentum carried by the struct quark (in the parton model), $z$ is a SIDIS observable and show the longitudinal momentum fraction carried by the identified hadron and $P_{hT}$ is the transversal momentum of the identified hadron.
   
 - Figure 2: The first line shows the total particle count and the normalized count per event. The second line focuses on the reconstruction  of the $x_B$ vs $Q^2$ graph for Pions and Kaons (due to the low number of events in the reduced file, they will have a very low sensibility and resolution, especially for the Kaons one). The latter line displays the density of the pion momentum in the transverse plane (x,y) and in the longitudinal plane (z, $p_T).
@@ -25,7 +26,7 @@ OUTPUT
 - Figure 4: There is a bar graph used to show how the free quarks and diquarks hadronize and three polar diagrams to show the angular propagation of the Pions, Kaons and scattered Electrons, which will be crucial to achieving the best detector design.
 
 
-Instead, in "ePIC_task.py" three graphs will be:
+Instead, in "ePIC_task.py", there are three sets of graphs:
 
 - Figure 1: Number of particles / total # of positive particles detected, with particles = Pions+, Kaons+ and Protons, in function of $Q^2$, $x$, $z$, $P_{hT}$, Momentum and rapidity ($\eta$).
 
