@@ -5,7 +5,7 @@ This program aims to analyze Semi-Inclusive Deep Inelastic Scattering (SIDIS) pr
 
 ____________________________________
 FILE NAME:
-- "pythia_ep_noradcor_18x275_eic.txt":   Pythia6.4 event generation of electron-proton collisions, the energy beam for the electron is set at 18 GeV while the proton one at 275 GeV. This program was created by the Software & Computing group in the ePIC Campaign1.0.0 some months ago, so it IS NOT MINE, there are just a few corrections but nothing valuable. More about the Event generation and Pythia6 on the main portal of the ePIC Collaboration https://eic.github.io/software/pythia6.html.
+- "pythia_ep_noradcor_18x275_eic.txt":   Pythia6.4 event generation of electron-proton collisions, the energy beam for the electron is set at 18 GeV while the proton one at 275 GeV. This program was created by the Software & Computing group in the ePIC Campaign1.0.0 some months ago, so it is not mine, there are just a few corrections but nothing valuable. More about the Event generation and Pythia6 on the main portal of the ePIC Collaboration https://eic.github.io/software/pythia6.html.
   
 - "pythia_ep_18x275_q2_0.1_1e7_rid.txt":  This file is a reduced output file created to show the program's behaviour quickly. Contains 3000 events with high energy change ($0.1 < Q^2 < 10^7$ $GeV ^2$), instead of 100K events of the original output file.
 
