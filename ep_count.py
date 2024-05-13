@@ -167,7 +167,6 @@ def identify_particle(pdg_code):
 
 # READ OF THE PYTHIA OUTPUT FILE
 filename = "pythia_ep_18x275_q2_0.1_1e7_rid.txt"                           # SMALL PART OF THE DATA, USED TO OBTAIN A FASTER SIMULATION 
-#filename = "pythia_ep_18x275_q2_1e-9_1_rid.txt"                           # SMALL DATA WITH LOWER ENERGY RANGE
 #filename = "pythia_ep_noradcor_18x275_q2_0.1_10000000_run1_100K.txt"      # ORIGINAL FILE BUT REQUIRE TOO MUCH TIME
 particles, particles_scatter, event_count = read_pythia_output(filename)
 
