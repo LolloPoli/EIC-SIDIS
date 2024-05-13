@@ -168,10 +168,7 @@ def identify_particle(pdg_code):
 
 # READ OF THE PYTHIA OUTPUT FILE
 filename = "pythia_ep_18x275_q2_0.1_1e7_rid.txt"                           # SMALL PART OF THE DATA, USED TO OBTAIN A FASTER SIMULATION 
-#filename = "pythia_ep_18x275_q2_1e-9_1_rid.txt"                           # SMALL DATA WITH LOWER ENEGY RANGE
-#filename = "pythia_ep_noradcor_18x275_q2_0.1_10000000_run1_100K.txt"      # ORIGINAL FILE BUT REQUIRE TOO MUCH TIME
-#filename = "pythia_ep_noradcor_18x275_q2_0.1_10000000_run1_10K.txt"       # 10K EVENT SET AT HIGH Q2
-#filename = "pythia_ep_noradcor_18x275_q2_1e-9_1.0_run1_10K.txt"           # 10K EVENT SET AT LOW Q2
+#filename = "pythia_ep_noradcor_18x275_q2_0.1_10000000_run1_100K.txt"      # ORIGINAL FILE 
 particles, particles_scatter, event_count = read_pythia_output(filename)
 
 # COUNTERS FOR ALL THE CONSIDERED PARTICLE TYPES
@@ -203,6 +200,7 @@ fragm_up, fragm_down, fragm_uu, fragm_ud = 0, 0, 0, 0
 
 
 # WE NEED A COUNT FOR ALL THE POSITIVE PARTICLES IN THE FINAL STATE
+# ONLY THE POSITIVE PARTICLES WITHOUT DAUGHTERS ARE CONSIDERED
 # POSITIVE CASE
 total_count_pos = 0
 for particle in particles:
@@ -211,7 +209,7 @@ for particle in particles:
     event_number = particle[9]  
     dau1 = particle[11]
     dau2 = particle[12]
-    if event_number not in (0, 1, 2, 3, 4, 5) and (dau1 == 0 and dau2 == 0): 
+    if event_number not in (0, 1, 2, 3, 4, 5) and (dau1 == 0 and dau2 == 0):  # THE 0-5 EVENT ARE REMOVED SINCE ARE RELATED TO THE BEAM'S PARTICLES
         if particle_name == "Positron":  
             electron_count_pos+= 1     
             total_count_pos += 1                             
@@ -256,6 +254,7 @@ for particle in particles:
             total_count_pos += 1
 
 # NEGATIVE CASE
+# SAME AS BEFORE BUT FOR THE NEGATIVE ONE
 total_count_neg = 0
 for particle in particles:
     pdg_code = particle[0]
@@ -317,7 +316,6 @@ norm_proton_pos = norm_particle_count(proton_count_pos, total_count_pos)
 norm_pion_neg = norm_particle_count(pion_count_neg, total_count_neg)
 norm_kaon_neg = norm_particle_count(kaon_count_neg, total_count_neg)
 
-
 # FUNCTION TO HAVE LINE HISTOGRAMS
 def plot_histogram_lines(data, bins, color, label, total_events, linewidth=2):
     hist, bins_edges = np.histogram(data, bins=bins)
@@ -326,10 +324,9 @@ def plot_histogram_lines(data, bins, color, label, total_events, linewidth=2):
     plt.plot(bins_centers, norm_hist, color=color, label=label, linewidth=linewidth)
 
 
-# DEFINITION OF MY VARIABLES
+# DEFINITION OF MY VARIABLES | WITHOUT DISTINCTION OF THE CHARGE
 # ENERGY
 pion_energies = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Pion+", "Pion-", "Pion0"] and particle[11] == 0 and particle[12] == 0]
-pion_charged_en = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Pion+", "Pion-"] and particle[11] == 0 and particle[12] == 0]
 proton_energies = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Proton+", "Proton-"] and particle[9] != 5 and particle[11] == 0 and particle[12] == 0]
 kaon_energies = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Kaon+", "Kaon-", "Kaon0"] and particle[11] == 0 and particle[12] == 0]
 pion_mass = [particle[6] for particle in particles if identify_particle(particle[0]) in ["Pion+", "Pion-", "Pion0"] and particle[11] == 0 and particle[12] == 0]
@@ -347,7 +344,9 @@ proton_z = [particle[4] for particle in particles if identify_particle(particle[
 kaon_x = [particle[2] for particle in particles if identify_particle(particle[0]) in ["Kaon+", "Kaon-", "Kaon0"] and particle[11] == 0 and particle[12] == 0]
 kaon_y = [particle[3] for particle in particles if identify_particle(particle[0]) in ["Kaon+", "Kaon-", "Kaon0"] and particle[11] == 0 and particle[12] == 0]
 kaon_z = [particle[4] for particle in particles if identify_particle(particle[0]) in ["Kaon+", "Kaon-", "Kaon0"] and particle[11] == 0 and particle[12] == 0]
+
 #_________________________________________________ POSITIVE PARTICLES ________________________________________________________________________________________________________________________________
+
 # PION
 pion_x_pos = [particle[2] for particle in particles if identify_particle(particle[0]) in ["Pion+"] and particle[11] == 0 and particle[12] == 0]
 pion_y_pos = [particle[3] for particle in particles if identify_particle(particle[0]) in ["Pion+"] and particle[11] == 0 and particle[12] == 0]
@@ -378,8 +377,9 @@ kaon_z_neg = [particle[4] for particle in particles if identify_particle(particl
 kaon_E_neg = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Kaon-", "K*+bar"] and particle[11] == 0 and particle[12] == 0]
 
 #____________________________________________________________________________________________________________________________________________________________________________________________________
-# LEPTON
-electron_energies = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Electron", "Positron"]] # LOW MULTIPLICITY
+
+# ELECTRON
+electron_energies = [particle[5] for particle in particles if identify_particle(particle[0]) in ["Electron", "Positron"]] # ALL THE ELECTRON OF THE PROCESS
 electron_px =  [particle[2] for particle in particles if identify_particle(particle[0]) in ["Electron", "Positron"]]
 electron_py =  [particle[3] for particle in particles if identify_particle(particle[0]) in ["Electron", "Positron"]]
 electron_pz =  [particle[4] for particle in particles if identify_particle(particle[0]) in ["Electron", "Positron"]]
@@ -390,7 +390,7 @@ sc_electron_px = [particle[2] for particle in particles if particle[9] == 3]
 sc_electron_py = [particle[3] for particle in particles if particle[9] == 3]
 sc_electron_pz = [particle[4] for particle in particles if particle[9] == 3]
 sc_electron_E = [particle[5] for particle in particles if particle[9] == 3]
-sc_phoyon_pz = [particle[4] for particle in particles if particle[9] == 4]
+sc_photon_pz = [particle[4] for particle in particles if particle[9] == 4]
 sc_photon_E = [particle[5] for particle in particles if particle[9] == 4]
 # ENHANCED COUNTS
 scattered_el_E = [particle[3] for particle in particles_scatter[1:]]        # THE FIRST TERM IS REMOVED SINCE IS A '0' GENERATED FROM THE 'if' CYCLE 
@@ -406,38 +406,9 @@ sc_el_E = [particle[7] for particle in particles_scatter]
 scat_el_E = [value for value in sc_el_E if value is not None]               # ENERGY NEEDED FOR THE GRAPH 
 mod_q = [np.sqrt(E**2 + pz**2) for E, pz in zip(scattered_gamma_E, scattered_gamma_pz)]   
 
-# OTHER QUANTITIES DEFINITION | AT THE MOMENT ARE USELESS
-'''
-# PION
-pion_transv_mom = [np.sqrt(px**2 + py**2) for px, py in zip (pion_x, pion_y)]  
-pion_mom = [np.sqrt(px**2 + py**2 + pz**2) for px, py, pz in zip(pion_x, pion_y, pion_z)]
-pion_long_mom = [np.sum(E - pz) for E, pz in zip(pion_energies, pion_z)]
-pion_angles = [np.arccos(pz/p) for pz, p in zip(pion_z, pion_mom)]            # Z-AXIS
-pion_angles_deg = [np.degrees(a) for a in pion_angles]
-z_pion = [(Eph - np.abs(Phz))/(Ee + np.abs(Pze)) for Eph, Phz, Ee, Pze in zip(pion_energies, pion_z, scattered_gamma_E, scattered_gamma_pz)]
-PhT_pion = [np.abs(Phz - ((Phz*z)/mz)) for Phz, z, mz in zip(pion_z, scattered_el_pz, mod_q)]
-# PROTON
-proton_transv_mom = [np.sqrt(px**2 + py**2) for px, py in zip (proton_x, proton_y)]  
-proton_mom = [np.sqrt(px**2 + py**2 + pz**2) for px, py, pz in zip(proton_x, proton_y, proton_z)]
-proton_long_mom = [np.sum(E - pz) for E, pz in zip(proton_energies, proton_z)]
-proton_angles = [np.arccos(pz/p) for pz, p in zip(proton_z, proton_mom)]      # Z-AXIS
-proton_angles_deg = [np.degrees(a) for a in proton_angles]
-z_proton = [(Eph - np.abs(Phz))/(Ee + np.abs(Pze)) for Eph, Phz, Ee, Pze in zip(proton_energies, proton_z, scattered_gamma_E, scattered_gamma_pz)]
-PhT_proton = [np.abs(Phz - ((Phz*z)/mz)) for Phz, z, mz in zip(proton_z, scattered_el_pz, mod_q)]
-# KAON
-kaon_transv_mom = [np.sqrt(px**2 + py**2) for px, py in zip (kaon_x, kaon_y)]  
-kaon_mom = [np.sqrt(px**2 + py**2 + pz**2) for px, py, pz in zip(kaon_x, kaon_y, kaon_z)]
-kaon_long_mom = [np.sum(E - pz) for E, pz in zip(kaon_energies, kaon_z)]
-kaon_angles = [np.arccos(pz/p) for pz, p in zip(kaon_z, kaon_mom)]            # Z-AXIS
-kaon_angles_deg = [np.degrees(a) for a in kaon_angles]
-z_kaon = [(Eph - np.abs(Phz))/(Ee + np.abs(Pze)) for Eph, Phz, Ee, Pze in zip(kaon_energies, kaon_z, scattered_gamma_E, scattered_gamma_pz)]
-PhT_kaon = [np.abs(Phz - ((Phz*z)/mz)) for Phz, z, mz in zip(kaon_z, scattered_el_pz, mod_q)]
-# SCATTERED ELECTRON
-sc_electron_mom = [np.sqrt(px**2 + py**2 + pz**2) for px, py, pz in zip(sc_electron_px, sc_electron_py, sc_electron_pz)]
-sc_electron_ang = [np.arccos(pz/p) for pz, p in zip(sc_electron_pz, sc_electron_mom)]
-sc_electron_ang_deg = [np.degrees(a) for a in sc_electron_ang]
-'''
+# KINEMATIC VARIABLES CONSTRUCTION
 #_____________________________________________________________________________ POSITIVE CASE _______________________________________________________________________________________________________
+
 # PION
 pion_transv_mom_pos = [np.sqrt(px**2 + py**2) for px, py in zip (pion_x_pos, pion_y_pos)]  
 pion_mom_pos = [np.sqrt(px**2 + py**2 + pz**2) for px, py, pz in zip(pion_x_pos, pion_y_pos, pion_z_pos)]
@@ -480,7 +451,7 @@ y_DA_kaon_pos = [np.abs(np.tan(p/2)/(np.tan(p/2) + np.tan(t/2))) for p, t in zip
 Q2_DA_kaon_pos = [np.abs(4*18*18*(1-abs(y))/(np.tan(t/2)**2)) for y, t in zip(y_DA_kaon_pos, lepton_angles)]
 x_DA_kaon_pos = [Q/(4*18*275*y*275) for Q, y in zip(Q2_DA_kaon_pos, y_DA_kaon_pos)]
 
-#_______________________________________________________________________ NEGATIVE CASE _______________________________________________________________________________________________________
+#_______________________________________________________________________ NEGATIVE CASE ______________________________________________________________________________________________________________
 
 # PION
 pion_transv_mom_neg = [np.sqrt(px**2 + py**2) for px, py in zip (pion_x_neg, pion_y_neg)]  
@@ -511,15 +482,17 @@ y_DA_kaon_neg = [np.abs(np.tan(p/2)/(np.tan(p/2) + np.tan(t/2))) for p, t in zip
 Q2_DA_kaon_neg = [np.abs(4*18*18*(1-abs(y))/(np.tan(t/2)**2)) for y, t in zip(y_DA_kaon_neg, lepton_angles)]
 x_DA_kaon_neg = [Q/(4*18*275*y*275) for Q, y in zip(Q2_DA_kaon_neg, y_DA_kaon_neg)]
 
+
 #________________________________________________________________________ POSITIVE GRAPHS ___________________________________________________________________________________________________________
 
 plt.figure(figsize=(12, 8))
 # FILTER POSSIBLE INVALID VALUE OF Q2 
+# TAKING THE PRODUCTION OF THE POSITIVE PARTICLES vs Q^2
 valid_Q2_pi_pos = [q2 for q2 in Q2_DA_pi_pos if q2 > 0]
 valid_Q2_kaon_pos = [q2 for q2 in Q2_DA_kaon_pos if q2 > 0]
 valid_Q2_proton_pos = [q2 for q2 in Q2_DA_proton_pos if q2 >0]
 
-# IN CASE THERE ARE NO PROBLES WITHT THE VALUE 
+# IN CASE THERE ARE NO PROBLEMS WITH THE VALUE 
 if valid_Q2_pi_pos and valid_Q2_kaon_pos and valid_Q2_proton_pos:
     # GENERATION OF A GREAT FIGURE TO FOUR GRAPHS
     plt.subplot(3,2,1)
@@ -542,7 +515,7 @@ if valid_Q2_pi_pos and valid_Q2_kaon_pos and valid_Q2_proton_pos:
 else:
     print("No valid Q^2 values found")
 
-# x (BJORKEN) VARIABLES OBSERVATION
+# x (BJORKEN) VARIABLES OBSERVATION 
 valid_X_pi_pos = [x for x in x_DA_pi_pos if x > 0]
 valid_X_kaon_pos = [x for x in x_DA_kaon_pos if x > 0]
 valid_X_proton_pos = [x for x in x_DA_proton_pos if x >0]
@@ -616,7 +589,7 @@ else:
     print("No valid pT values found")
 
 
-# RAPIDITY
+# RAPIDITY | SET POSITIVE ALONG THE Z-AXIS
 plt.subplot(3,2,5)
 plot_histogram_lines(pion_rapidity_pos, bins=50, color='skyblue', label='Pions', total_events=total_count_pos)
 plot_histogram_lines(kaon_rapidity_pos, bins=50, color='lightgreen', label='Kaons', total_events=total_count_pos)
@@ -627,7 +600,7 @@ plt.ylabel('Normalized Number of Particles')
 plt.title('Number of pi+, P and K+ vs rapidity')
 plt.grid(True, which="both", ls="--", alpha=0.5)
 plt.legend()
-rapidity_to_degrees = {-4: '178°', -2: '', -0.88: '135°', 0: '90°', 0.88: '45°', 2: '', 4: '2°'}
+rapidity_to_degrees = {-4: '178°', -2: '', -0.88: '135°', 0: '90°', 0.88: '45°', 2: '', 4: '2°'}      # TO HAVE A SMALL IDEA ABOUT THE CONNECTION OF THE RAPIDITY AND THE EMISSION ANGLE
 tick_positions = [-4, -2, -0.88, 0, 0.88, 2, 4]
 tick_labels = ['{}  \n  {}'.format(rapidity, rapidity_to_degrees[rapidity]) for rapidity in tick_positions]
 plt.xticks(tick_positions, tick_labels)
@@ -664,7 +637,7 @@ plt.figure(figsize=(12, 8))
 valid_Q2_pi_neg = [q2 for q2 in Q2_DA_pi_neg if q2 > 0]
 valid_Q2_kaon_neg = [q2 for q2 in Q2_DA_kaon_neg if q2 > 0]
 
-# IN CASE THERE ARE NO PROBLES WITHT THE VALUE 
+# IN CASE THERE ARE NO PROBLEMS WITH THE VALUE 
 if valid_Q2_pi_neg and valid_Q2_kaon_neg:
     # GENERATION OF A GREAT FIGURE TO FOUR GRAPHS
     plt.subplot(3,2,1)
@@ -790,8 +763,8 @@ else:
 #____________________________________________________________________ ANGLE PRODUCTION ______________________________________________________________________________________________________________
 
 plt.figure(figsize=(13, 7))
-plt.title('Production of Pions, Kaons and Protons in function of the Angle')
-plt.axis('off')
+plt.title('Production of Pions, Kaons and Protons in function of the Angle')   # GENERIC TITLE OF THE FIGURE
+plt.axis('off')                                                                # TO REMOVE THE BORDER OF THE GRAPH
 
 # POSITIVE PION
 plt.subplot(2,3,1, polar=True)
