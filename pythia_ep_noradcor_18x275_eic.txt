@@ -1,10 +1,10 @@
-pythia_ep_noradcor_18x275_q2_0.1_1000000_run1_100K.txt     ! OUTPUT FILE NAME
+pythia_ep_noradcor_18x275_q2_0.1_10000000_run1_100K.txt     ! OUTPUT FILE NAME
 11                          ! LEPTON BEAM TYPE
 275, 18                     ! PROTON AND ELECTRON BEAM ENERGY
 100000,1                    ! NUMBER OF EVENTS
 1e-09, 0.99                 ! LIMIT OF x
 1e-09, 1.00                 ! LIMIT OF y
-0.1, 1000000                ! RANGE OF Q^2
+0.1, 10000000               ! RANGE OF Q^2
 F2PY,1998                   ! F2-MODEL, R-PARAMETRISATION
 0                           ! RADIATIVE CORRECTIONS; 0:no, 1:yes, 2:gen.lookup table
 1                           ! PYTHIA-MODEL 1: GENERATION IN y AND Q^2 FOR RADGEN 
