@@ -1,4 +1,4 @@
-pythia_ep_noradcor_18x275_q2_0.1_1_run1_100K.txt     ! OUTPUT FILE NAME
+pythia_ep_noradcor_18x275_q2_0.1_1000000_run1_100K.txt     ! OUTPUT FILE NAME
 11                          ! LEPTON BEAM TYPE
 275, 18                     ! PROTON AND ELECTRON BEAM ENERGY
 100000,1                    ! NUMBER OF EVENTS
