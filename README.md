@@ -11,7 +11,7 @@ FILE NAME:
 
 - "ep_count.py":  This is the Python program used to analyze the output file and reconstruct some important behaviour of the processes.
 
-- "ePIC_task.py:  Just the same program  structure as before, but, with other calculations (a new program was used to have a more performant setup), here there were performed the first task for the ePIC collaboration in the particles identification through the observation of charged particles (still an ongoing program, it is not finished yet).
+- "ePIC_task.py":  Just the same program  structure as before, but, with other calculations (a new program was used to have a more performant setup), here there were performed the first task for the ePIC collaboration in the particles identification through the observation of charged particles (still an ongoing program, it is not finished yet).
 ____________________________________
 OUTPUT
 
