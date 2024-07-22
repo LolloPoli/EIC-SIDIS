@@ -1,0 +1,150 @@
+export LIBGL_ALWAYS_INDIRECT=1
+export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0
+
+`
+
+percorso:
+\\wsl.localhost\Ubuntu-22.04\home\lorenzo\Software\eic
+
+Per fare aprire un TBrowser di Root:
+$ root --web=off
+
+EIC___________________________________________________________________________
+
+eic-shell --upgrade
+
+go to nightly:
+source /opt/detector/epic-nightly/setup.sh
+
+
+CLONE A REPOSITORY
+$ git clone https:.... 
+
+add a branch:
+$ git checkout ... (could be found in the path, after the last /)
+
+nightly necessary to work with detector and simulation (i think, necessary for sure in dd4hep)
+
+EICrecon
+source EICrecon/bin/eicrecon-this.sh
+_____________________________________________________________________
+
+PRENDERE FILE (FORSE PIU' RECENTI)
+DENTRO eic-prod, dentro RECO, l'ultimo al momento è 24.04.0
+per entrare nel mode usi:
+
+xrdfs root://dtn-eic.jlab.org
+
+PER CERCARE COMANDI COME:
+xrdfs root://dtn-eic.jlab.org
+ls /work/eic2/EPIC/RECO/23.12.0/epic_craterlake/DIS/NC/18x275/minQ2=10
+
+PER COPIARE 
+exit #torni in jug_xl>
+
+xrdcp root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/24.04.0/epic_craterlake/SIDIS/pythia6-eic/1.0.0/18x275/q2_0to1/pythia_ep_noradcor_18x275_q2_0.000000001_1.0_run10.ab.1449.eicrecon.tree.edm4eic.root ./
+
+last-> 24.05.0/epic_craterlake/SIDIS/pythia6-eic/1.0.0/18x275/q2_0to1/pythia_ep_noradcor_18x275_q2_0.000000001_1.0_run9.ab.1888.eicrecon.tree.edm4eic.root
+
+
+_____________________________________________________________________
+
+RUNNING A SINGLE-PARTICLE SIMULATION
+
+go to nightly mode
+
+$ ddsim --steeringFile steering.py --compactFile $DETECTOR_PATH/$DETECTOR_CONFIG.xml -G -N 10 --gun.thetaMin "3*deg" --gun.thetaMax "45*deg" --gun.distribution "cos(theta)" --gun.momentumMin "1*GeV" --gun.momentumMax "10*GeV" --gun.particle "pi+"
+
+- "steering.py" is the name of the file that you use (in our first case is "minimal.py")
+- -G is the particle gun command
+- -N 10 is the number of events
+- the distribution of the angle follow cos(theta) with 3° < theta < 45°
+- la distribuzione del momento è uniforme tra 1-10 GeV
+- --gun.multiplicity # (with # = number of particles that we want to run)
+
+file example (.py)-------------------------------------------------------
+
+form DDSim.DD4hepSimulayion import DD4hepSimulation
+from g4units import mm, GeV, MeV, deg
+SIM = DD4hepSimulation()
+
+SIM.gun.thetaMin = 135*deg
+SIM.gun.thetaMax = 177*deg
+SIM.gun.distribution = "cos(theta)"
+SIM.gun.momentumMin = 1*GeV
+SIM.gun.momentumMax = 10*GeV
+SIM.gun.particle = "e-"
+SIM.gun.multiplicity = 2 
+-------------------------------------------------------------------
+
+IL COMANDO PER LA SIMULAZIONE DIVENTA:
+
+$ ddsim --steeringFile ee_1GeV_10GeV_EndcapN.py --compactFile $DETECTOR_PATH/$DETECTOR_CONFIG.xml -G -N 10
+
+
+
+PER AVERE UN OUTPUTFILE:
+
+$ ddsim --steeringFile ee_1GeV_10GeV_EndcapN.py --compactFile $DETECTOR_PATH/$DETECTOR_CONFIG.xml -G -N 10 --outputFile ee_1GeV_10GeV_EndcapN_1e1.edm4hep.root
+
+
+
+PER LEGGERE UN FILE ROOT:
+
+$ root -l nomedelfile.root
+[1] .ls
+or [1] new TBrowser
+
+____________________________________________________________________
+run eicrecon:
+source bin/eicrecon-this.sh
+
+setup the evironment:
+source environ.sh
+
+
+ROOT readfile
+https://root.cern/js/latest/
+
+
+particles simulation:
+ddsim --steeringFile minimal.py --compactFile $DETECTOR_PATH/$DETECTOR_CONFIG.xml -G -N 10 --gun.thetaMin "3*deg" --gun.thetaMax "45*deg" --gun.distribution "cos(theta)" --gun.momentumMin "1*GeV" --gun.momentumMax "10*GeV" --gun.particle "pi+"
+
+
+______________________________________________________________________
+esempio .py:
+from DDSim.DD4hepSimulation import DD4hepSimulation
+from g4units import mm, GeV, MeV, deg
+SIM = DD4hepSimulation()
+
+SIM.gun.thetaMin = 135*deg
+SIM.gun.thetaMax = 177*deg
+SIM.gun.distribution = "eta"
+SIM.gun.momentumMin = 1*GeV
+SIM.gun.momentumMax = 10*GeV
+SIM.gun.particle = "e-"
+SIM.gun.multiplicity = 2
+______________________________________________________________________
+
+
+PLUGIN:
+
+to create: eicmkplugin.py  Filename (myFirstPlugin used as filename in the tutorial)
+
+to compile: cmake -S myFirstPlugin -B myFirstPlugin/build
+            cmake --build myFirstPlugin/build --target install
+
+test: eicrecon -Pplugins=Filename,JTest -Pjana:nevents=10
+
+
+
+
+
+
+_________________________FILE MOMENTANEI PYTHIA____________________________________________________
+
+g++ -I/home/lorenzo/Software/pythia8/pythia8310/include tutorial1.cc -o tutorial1 -lpythia8 -L/home/lorenzo/Software/pythia8/pythia8310/lib
+
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/home/lorenzo/Software/pythia/pythia8310/lib
+
+export PYTHIA8DATA=/home/lorenzo/Software/pythia/pythia8310/share/Pythia8/xmldoc
