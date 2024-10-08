@@ -7,9 +7,11 @@
 #include "TLorentzVector.h"
 #include <cmath>
 // per far funzionare il programma
+// . /cvmfs/sft.cern.ch/lcg/views/LCG_105a/x86_64-centos7-gcc11-opt/setup.sh
 // root
 // .L task.C
 // pino()
+// meglio usare 'run_all.C'
 
 std::vector<double> CreateLogBinning(int nbins, double xmin, double xmax) {
     std::vector<double> bin_edges(nbins + 1);
