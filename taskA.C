@@ -1686,3 +1686,88 @@ int main33() {
   return 0;
 
 }
+
+int main34() {
+  
+  const char* inputFile1 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1400.eicrecon.tree.edm4eic.root";
+  const char* inputFile2 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1399.eicrecon.tree.edm4eic.root";
+  const char* inputFile3 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1398.eicrecon.tree.edm4eic.root";
+  const char* outputFile = "out34.hist.root";
+  pino(inputFile1, inputFile2, inputFile3, outputFile);
+
+  return 0;
+
+}
+
+int main35() {
+  
+  const char* inputFile1 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1397.eicrecon.tree.edm4eic.root";
+  const char* inputFile2 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1396.eicrecon.tree.edm4eic.root";
+  const char* inputFile3 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1395.eicrecon.tree.edm4eic.root";
+  const char* outputFile = "out35.hist.root";
+  pino(inputFile1, inputFile2, inputFile3, outputFile);
+
+  return 0;
+
+}
+
+int main36() {
+  
+  const char* inputFile1 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1394.eicrecon.tree.edm4eic.root";
+  const char* inputFile2 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1393.eicrecon.tree.edm4eic.root";
+  const char* inputFile3 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1392.eicrecon.tree.edm4eic.root";
+  const char* outputFile = "out36.hist.root";
+  pino(inputFile1, inputFile2, inputFile3, outputFile);
+
+  return 0;
+
+}
+
+int main37() {
+  
+  const char* inputFile1 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1391.eicrecon.tree.edm4eic.root";
+  const char* inputFile2 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1390.eicrecon.tree.edm4eic.root";
+  const char* inputFile3 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1389.eicrecon.tree.edm4eic.root";
+  const char* outputFile = "out37.hist.root";
+  pino(inputFile1, inputFile2, inputFile3, outputFile);
+
+  return 0;
+
+}
+
+int main38() {
+  
+  const char* inputFile1 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1388.eicrecon.tree.edm4eic.root";
+  const char* inputFile2 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1387.eicrecon.tree.edm4eic.root";
+  const char* inputFile3 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1386.eicrecon.tree.edm4eic.root";
+  const char* outputFile = "out38.hist.root";
+  pino(inputFile1, inputFile2, inputFile3, outputFile);
+
+  return 0;
+
+}
+
+int main39() {
+  
+  const char* inputFile1 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1385.eicrecon.tree.edm4eic.root";
+  const char* inputFile2 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1384.eicrecon.tree.edm4eic.root";
+  const char* inputFile3 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1383.eicrecon.tree.edm4eic.root";
+  const char* outputFile = "out39.hist.root";
+  pino(inputFile1, inputFile2, inputFile3, outputFile);
+
+  return 0;
+
+}
+
+int main40() {
+  
+  const char* inputFile1 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1382.eicrecon.tree.edm4eic.root";
+  const char* inputFile2 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1381.eicrecon.tree.edm4eic.root";
+  const char* inputFile3 = "pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1380.eicrecon.tree.edm4eic.root";
+  const char* outputFile = "out40.hist.root";
+  pino(inputFile1, inputFile2, inputFile3, outputFile);
+
+  return 0;
+
+}
+
