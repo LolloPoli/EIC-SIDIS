@@ -12,6 +12,15 @@ FILE NAME:
 - "ep_count.py":  This is the Python program used to analyze the output file and reconstruct some important behaviour of the processes.
 
 - "ePIC_task.py":  Just the same program  structure as before, but, with other calculations (a new program was used to have a more performant setup), here there were performed the first task for the ePIC collaboration in the particles identification through the observation of charged particles (still an ongoing program, it is not finished yet).
+
+- "taskA.C" and "taskB.C": This is the principal program of the analysis. It perform the Recontruction and PID for the particle productions. A is for positive particles and B is for the charged ones.
+
+- "run_all.C": Is necessary to run all the main inside the task program.
+
+- "combined.cpp": Combine all the canvas produced by the different main.
+
+- "efficiencyA.cpp" and "efficiencyB.cpp": Calculate the Reconstruction efficiency via MC ID and PID efficiency for positive particles (A) and charged particles (B), and use the combined canvas from 'combined.cpp'.
+  
 ____________________________________
 OUTPUT
 
