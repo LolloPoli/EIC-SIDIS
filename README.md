@@ -3,6 +3,9 @@
 
 This program aims to analyze Semi-Inclusive Deep Inelastic Scattering (SIDIS) processes, involving polarized beams of electrons and protons at high energy to simulate the future innovative measure of the Electron-Ion Collider (EIC). The EIC, set to be located at the Brookhaven National Laboratory (BNL) in New York, promises unprecedented accuracy in studying nuclear components, providing crucial insights into the fundamental quark and gluon constituents of the nuclear structure.
 
+The data are taken from:  root://dtn-ic.jlab.org//work/eic2/EPIC/RECO/24.06.0/epic_craterlake/DIS/NC/18x275/minQ2=1/pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_4.1388.eicrecon.tree.edm4eic.root ./ 
+(here the 24.06 is the campaign and the file name is just an example).
+
 ____________________________________
 FILE NAME:
 - "pythia_ep_noradcor_18x275_eic.txt":   Pythia6.4 event generation of electron-proton collisions, the energy beam for the electron is set at 18 GeV while the proton one at 275 GeV. This program was created by the Software & Computing group in the ePIC Campaign1.0.0 some months ago, so it is not mine, there are just a few corrections but nothing valuable. More about the Event generation and Pythia6 on the main portal of the ePIC Collaboration https://eic.github.io/software/pythia6.html.
@@ -42,4 +45,11 @@ Instead, in "ePIC_task.py", there are three sets of graphs:
 - Figure 2: The same as before but with negative particles and only with the reconstruction of Pions- and Kaons-
 
 - Figure 3: Show the angular production of the particles, the first line is for the positive case while the second line is for the negative one. Each graph is normalized to 1 to achieve a better resolution and comprehension.
+
+
+  "task#.C":
+
+  - Production as a function of $Q^2, x_B, z, P_{hT}, \eta, \phi, P_h$ for pion, kaon and proton.
+    
+    
 ________________________________________
