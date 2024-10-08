@@ -12,6 +12,10 @@
 // .L task.C
 // pino()
 // meglio usare 'run_all.C'
+// .L task.C
+// .L run_all.C
+// run()
+
 
 std::vector<double> CreateLogBinning(int nbins, double xmin, double xmax) {
     std::vector<double> bin_edges(nbins + 1);
